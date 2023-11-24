@@ -69,7 +69,7 @@ class NetworkLayer:
         :param frame: a python dictionary represent the a sender's packet or a receiver's reply
         :return: the receiver's reply as a python dictionary returned to the sender
         """
-        RED = '\033[91m'
+        RED = "\033[31;1m"
         RESET = '\033[0m'
         # TODO: You may add ONLY print statements to this function for debugging purpose
         self.packet = frame
@@ -77,14 +77,14 @@ class NetworkLayer:
 
         if s_test and self.pkt_corrupt:
             self.__corrupt_packet()
-            print(RED+'Network Layer Corruption Occured for sent packet frame '+RESET+ f'{frame}')
+            print( RED + 'Network Layer Corruption Occured for sent packet frame ' + RESET + f'{frame}')
         time.sleep(self.delay)
-        
+
         # bridge|connect the RDT sender and receiver
         self.reply = self.recv.rdt_rcv(self.packet)
-        
+
         r_test = self.__packet_corruption_probability()
         if r_test and self.ack_corrupt:
             self.__corrupt_reply()
-            print(RED+'Network Layer Corruption Occured for ACK '+RESET+ f'{self.reply}')
+            print(RED + 'Network Layer Corruption Occured for ACK ' + RESET + f'{self.reply}')
         return self.reply

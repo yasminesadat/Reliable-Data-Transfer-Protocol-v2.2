@@ -44,12 +44,11 @@ class RDTReceiver:
          :param exp_seq: the receiver expected sequence number '0' or '1' represented as a character
          :return: True -> if ack in the reply match the   expected sequence number otherwise False
         """
-        if rcv_pkt['sequence_number']==exp_seq:
+        if rcv_pkt['sequence_number'] == exp_seq:
             return True
         else:
             return False
         pass
-
 
     @staticmethod
     def make_reply_pkt(seq, checksum):
@@ -69,27 +68,21 @@ class RDTReceiver:
         :param rcv_pkt: a packet delivered by the network layer 'udt_send()' to the receiver
         :return: the reply packet
         """
-        GREEN = '\033[92m'
+        GREEN = "\033[32;1m"
         RESET = '\033[0m'
-        seq=None
-        #case correct
+        seq = None
+        # case correct
         # deliver the data to the process in the application layer
-        print(GREEN+'Receiver expecting: '+RESET+str(self.sequence))
-        if ((not(RDTReceiver.is_corrupted(rcv_pkt))) and RDTReceiver.is_expected_seq(rcv_pkt,self.sequence)):
-          ReceiverProcess.deliver_data(rcv_pkt['data'])
-          seq=self.sequence
-          self.sequence='0' if self.sequence =='1' else '1'
-          reply_pkt = RDTReceiver.make_reply_pkt(seq,ord(seq))
-          print(GREEN+'Receiver reply:'+RESET+ f'{reply_pkt}')
-          return reply_pkt
+        print(GREEN + 'Receiver expecting seq num: ' + RESET + str(self.sequence))
+        if (not (RDTReceiver.is_corrupted(rcv_pkt))) and RDTReceiver.is_expected_seq(rcv_pkt, self.sequence):
+            ReceiverProcess.deliver_data(rcv_pkt['data'])
+            seq = self.sequence
+            self.sequence = '0' if self.sequence == '1' else '1'
         else:
-             seq='0' if self.sequence =='1' else '1'
-             reply_pkt = RDTReceiver.make_reply_pkt(seq,ord(seq))
-             print(GREEN+'Receiver reply:'+RESET+ f'{reply_pkt}')
-             return reply_pkt 
-       
-        #return None
-        """ 
-        reply_pkt = self.make_reply_pkt('1',ord('1')) 
-        return reply_pkt 
-        """ 
+        # negative ACK using last correctly received ACK
+            seq = '0' if self.sequence == '1' else '1'
+            
+        reply_pkt = RDTReceiver.make_reply_pkt(seq, ord(seq))
+        print(GREEN + 'Receiver reply:' + RESET + f'{reply_pkt}')
+        return reply_pkt
+

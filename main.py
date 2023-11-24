@@ -20,8 +20,7 @@ if __name__ == '__main__':
 
     print(f'Sender is sending:{SenderProcess.get_outgoing_data()}')
 
-    network_serv = NetworkLayer(reliability=prob_to_deliver, delay=delay, pkt_corrupt=corrupt_pkt,
-                                ack_corrupt=corrupt_ack)
+    network_serv = NetworkLayer(reliability=prob_to_deliver, delay=delay, pkt_corrupt=corrupt_pkt, ack_corrupt=corrupt_ack)
 
     rdt_sender = RDTSender(network_serv)
     rdt_sender.rdt_send(SenderProcess.get_outgoing_data())

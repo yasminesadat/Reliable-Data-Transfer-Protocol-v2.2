@@ -73,7 +73,7 @@ class RDTSender:
         :param exp_seq: the sender expected sequence number '0' or '1' represented as a character
         :return: True -> if ack in the reply match the   expected sequence number otherwise False
         """
-        if reply['ack']==exp_seq:
+        if reply['ack'] == exp_seq:
             return True
         else:
             return False
@@ -101,25 +101,23 @@ class RDTSender:
         :return: terminate without returning any value
         """
 
-         # for every character in the buffer
+        # for every character in the buffer
         for data in process_buffer:
-            BLUE = '\033[94m'
+            BLUE = "\033[34;1m"  # Using 34 for a darker shade of blue and 1 for bold
             RESET = '\033[0m'
-            print(BLUE+"Sender expecting sequence number: "+RESET+str(self.sequence))
+            print(BLUE + "Sender expecting sequence number: " + RESET + str(self.sequence))
             checksum = RDTSender.get_checksum(data)
             pkt = RDTSender.make_pkt(self.sequence, data, checksum)
-            print(BLUE+'Sender sending: '+RESET+ f'{pkt}')
-            #ADDED
-            pkt_clone=RDTSender.clone_packet(pkt)    
+            print(BLUE + 'Sender sending: ' + RESET + f'{pkt}')
+            # ADDED
+            pkt_clone = RDTSender.clone_packet(pkt)
             reply = self.net_srv.udt_send(pkt)
-            print(BLUE+'Sender received:'+RESET+ f'{reply}')
-            while RDTSender.is_corrupted(reply) or not(RDTSender.is_expected_seq(reply,self.sequence)):
-                #print('corrupted? '+str(RDTSender.is_corrupted(reply)))
-                #print('not seq no? '+str(not(RDTSender.is_expected_seq(reply,self.sequence))))
-                print(BLUE+'Sender sending: '+RESET+ f'{pkt_clone}')
-                reply=self.net_srv.udt_send(pkt_clone)
-                print(BLUE+'Sender received:'+RESET+ f'{reply}')
-            self.sequence='0' if self.sequence =='1' else '1'
+            print(BLUE + 'Sender received:' + RESET + f'{reply}')
+            while RDTSender.is_corrupted(reply) or not (RDTSender.is_expected_seq(reply, self.sequence)):
+                print(BLUE + 'Sender sending: ' + RESET + f'{pkt_clone}')
+                reply = self.net_srv.udt_send(pkt_clone)
+                print(BLUE + 'Sender received:' + RESET + f'{reply}')
+            self.sequence = '0' if self.sequence == '1' else '1'
 
         print(f'Sender Done!')
         return
