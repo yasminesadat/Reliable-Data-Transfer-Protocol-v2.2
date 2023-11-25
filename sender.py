@@ -94,7 +94,7 @@ class RDTSender:
             'checksum': checksum
         }
         return packet
-
+    
     def rdt_send(self, process_buffer):
         """ Implement the RDT v2.2 for the sender
         :param process_buffer:  a list storing the message the sender process wish to send to the receiver process
@@ -115,9 +115,10 @@ class RDTSender:
             print(BLUE + 'Sender received:' + RESET + f'{reply}')
             while RDTSender.is_corrupted(reply) or not (RDTSender.is_expected_seq(reply, self.sequence)):
                 print(BLUE + 'Sender sending: ' + RESET + f'{pkt_clone}')
-                reply = self.net_srv.udt_send(pkt_clone)
+                reply = self.net_srv.udt_send(RDTSender.clone_packet(pkt_clone))
                 print(BLUE + 'Sender received:' + RESET + f'{reply}')
             self.sequence = '0' if self.sequence == '1' else '1'
-
+     
         print(f'Sender Done!')
         return
+    
