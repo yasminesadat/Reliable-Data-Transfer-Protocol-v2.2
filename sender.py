@@ -37,7 +37,6 @@ class RDTSender:
         :param data: one and only one character, for example data = 'A'
         :return: the ASCII code of the character, for example ASCII('A') = 65
         """
-        # TODO provide your own implementation
         checksum = ord(data)
         return checksum
 
